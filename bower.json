@@ -1,0 +1,21 @@
+{
+  "name": "studyangular",
+  "homepage": "https://github.com/shenmou101/study-angular",
+  "authors": [
+    "shenmou101 <516211584@qq.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "./lib",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.5"
+  }
+}
