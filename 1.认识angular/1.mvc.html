@@ -6,7 +6,7 @@
 </head>
 <body>
 <div ng-controller="HelloCtrl">
-    姓名：{{name}}
+    姓名：{{user.username}}
     年龄：{{add(13,10)}}
 </div>
 </body>
@@ -15,13 +15,11 @@
     //定义一个模块
     angular.module('helloAngular',[]);
     //获取定义的模块
-    angular.module('helloAngular').controller('HelloCtrl', function ($scope) {  //$scope是定义控制器后送的作用域对象 也叫视图模型
-        var user = {
-            name:'dengjia',
-            age:23
-        };
-        $scope.name = user.name;
-        $scope.age = user.age;
+    angular.module('helloAngular').controller('HelloCtrl', function ($scope,$http) {  //$scope是定义控制器后送的作用域对象 也叫视图模型
+        //$http 其实是对jquery ajax的封装
+        $http.get('users.json').success(function (data) {
+            $scope.user = data
+        });
         $scope.add = function (a,b) {
             return a+b;
         }

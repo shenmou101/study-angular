@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-<div login-panel></div>
+<div style="width: 100px;height: 100px;" red-border>hello</div>
 </body>
 <script src="../lib/angular/angular.js"></script>
 <script>
@@ -24,11 +24,19 @@
         }
     });
 
-    angular.module('helloAngular').directive('loginPanel', function () {
+    angular.module('helloAngular').directive('redBorder', function () {
         return {
             //链接函数
-            link:function(){
-
+            /*
+            * scope 代表当前的作用域
+            * element 代表当前要增加的元素 是一个jquery对象 因此element.不能直接跟原生方法
+            * attr 当前元素的所有属性的集合
+            * */
+            link:function(scope,element,attrs){
+                element.css('border','1px solid red');
+                element.on('click', function () {
+                    alert(element.html())
+                })
             }
         }
     });
