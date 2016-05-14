@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="helloAngular">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div login-panel></div>
+</body>
+<script src="../lib/angular/angular.js"></script>
+<script>
+    //定义一个模块
+    angular.module('helloAngular',[]);
+    //获取定义的模块
+    angular.module('helloAngular').controller('HelloCtrl', function ($scope) {  //$scope是定义控制器后送的作用域对象 也叫视图模型
+        var user = {
+            name:'dengjia',
+            age:23
+        };
+        $scope.name = user.name;
+        $scope.age = user.age;
+        $scope.add = function (a,b) {
+            return a+b;
+        }
+    });
+
+    angular.module('helloAngular').directive('loginPanel', function () {
+        return {
+            //链接函数
+            link:function(){
+
+            }
+        }
+    });
+</script>
+</html>
