@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="djMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        div{
+            border:red 1px solid;
+        }
+    </style>
+</head>
+<body>
+<div ng-controller="parenetCtrl">
+    {{parent}}
+    {{child}}
+    <div ng-controller="childCtrl">
+        {{parent}}
+        {{child}}
+    </div>
+</div>
+</body>
+<script src="../lib/angular/angular.js"></script>
+<script>
+    /*
+    * 每个angular应用只有一个根$rootScope对象(ng-app)
+    * 子$scope对象遵循原型继承，会继承父$scope上的属性和方法
+    *
+    * */
+    angular.module('djMod',[]);
+    angular.module('djMod').controller('parenetCtrl', function ($scope) {
+        $scope.parent = 'parent';
+    });
+    angular.module('djMod').controller('childCtrl', function ($scope) {
+        $scope.child = 'child';
+    })
+</script>
+</html>
