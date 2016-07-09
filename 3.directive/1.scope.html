@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="djMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css">
+    <style>
+    </style>
+</head>
+<body>
+<div ng-controller="parenetCtrl">
+    张三:{{zhangsan}}
+    李四:{{lisi}}<br>
+    <at-person name="{{zhangsan}}"></at-person>
+    <at-person name="{{lisi}}"></at-person>
+    <hr>
+</div>
+
+<div ng-controller="parenetCtrl">
+    张三:{{zhangsan}}
+    李四:{{lisi}}<br>
+    <eq-person name="zhangsan"></eq-person>
+    <eq-person name="lisi"></eq-person>
+    <hr>
+</div>
+
+<div ng-controller="parenetCtrl">
+    张三:{{zhangsan}}
+    李四:{{lisi}}<br>
+    <and-person name="zhangsan" greet="greet(name)"></and-person>
+    <and-person name="lisi" greet="greet(name)"></and-person>
+    <hr>
+</div>
+</body>
+<script src="../lib/angular/angular.js"></script>
+<script>
+    /*
+    * 每个angular应用只有一个根$rootScope对象(ng-app)
+    * 子$scope对象遵循原型继承，会继承父$scope上的属性和方法
+    *
+    * */
+    angular.module('djMod',[]);
+    angular.module('djMod').controller('parenetCtrl', function ($scope) {
+        $scope.zhangsan = 'zhangsan';
+        $scope.lisi = 'lisi';
+        $scope.greet = function(name){
+            alert('greet'+name)
+        }
+    });
+    angular.module('djMod').directive('atPerson', function () {
+        return {
+            //scope:true, //每个指令实例拥有自己的scope
+            scope:{
+             name:'@name'   //@当前scope上的name属性引用指令上name属性的字面量值，为单向绑定，子不影响父
+            },
+            template:'<input type="text" ng-model="name"> <div>姓名:{{name}}</div>'
+        }
+    });
+    angular.module('djMod').directive('eqPerson', function () {
+        return {
+            //scope:true, //每个指令实例拥有自己的scope
+            scope:{
+                name:'=name'   // =和父控制器上的属性进行双向绑定
+            },
+            template:'<input type="text" ng-model="name"> <div>姓名:{{name}}</div>'
+        }
+    });
+    angular.module('djMod').directive('andPerson', function () {
+        return {
+            //scope:true, //每个指令实例拥有自己的scope
+            scope:{
+                namexx:'=name',   //当前scope上的name属性引用指令上name属性的字面量值
+                greet:'&'
+            },
+            template:'<input type="text" ng-model="namexx"><div>姓名:{{namexx}}<button ng-click="greet({name:namexx})">打招呼</button></div>'
+            //{name:namexx} 第一个name是传入函数的形参名 第二个是ng-model绑定的name
+        }
+    });
+</script>
+</html>
