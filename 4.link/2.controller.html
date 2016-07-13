@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="djMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css">
+    <style>
+    </style>
+</head>
+<body class="container" ng-controller="djCtrl">
+    <girl>
+        <span kind="beautiful,clever">娟{{kinds}}</span>
+    </girl>
+
+    <!--当同一个元素绑定多个相同的指令则指令合并为第一个-->
+</body>
+<script src="../lib/angular/angular.js"></script>
+<script>
+    /*
+    * 每个angular应用只有一个根$rootScope对象(ng-app)
+    * 子$scope对象遵循原型继承，会继承父$scope上的属性和方法
+    *
+    * */
+    angular.module('djMod',[]);
+    angular.module('djMod').controller('djCtrl', function ($scope) {
+
+    });
+    //过滤器服务的名字就是过滤器名字+Filter 服务即函数
+    angular.module('djMod').directive('girl', function () {
+        return {
+            restrict: 'E',
+            scope: true,
+            //link用来将指令隔离开 controller用来定义可以复用的行为和可以提供给别的指令调用方法
+            //控制器里命名是死的，是依赖注入的服务
+            controller: function ($scope,$element,$attrs) {
+                $scope.kinds = [];
+                this.add = function (kind) {
+                    $scope.kinds.push(kind);
+                    console.log($scope.kinds)
+                }
+            },
+            transclude: true,   //指令所在的元素的子元素不会被指令覆盖 而是内嵌入所在元素
+            template: '<div ng-transclude></div>',
+            //link里是形参，可以随便写
+            link: function (scope,element,attrs) {
+                element.bind('click', function () {
+                    alert(scope.kinds);
+                })
+            }
+        }
+    });
+    angular.module('djMod').directive('kind', function () {
+        return {
+            require:'^girl',
+            /*
+            前缀查找，可以修改查找控制器的行为
+            1. ? 如果同级找不到，会赋null
+            2. ^ 在同级和上级中查找命令 找不到则报错
+            3. ^? 在同级和上级中查找命令，找不到会赋null
+            4. 无前缀 在同级（自身）查找 找不到则报错
+            */
+
+            link: function (scope,element,attrs,girlCtrl) {
+                console.log(attrs.kind);
+                attrs.kind.split(',').forEach(function(kind){
+                    girlCtrl.add(kind);
+                    console.log(scope.kind);
+                });
+            }
+        }
+    });
+    /*angular.module('djMod').directive('beautiful', function () {
+        return {
+            require:'girl',
+            link: function (scope,element,attrs,girlCtrl) {
+                girlCtrl.add('beautiful');
+            }
+        }
+    });
+    angular.module('djMod').directive('clever', function () {
+        return {
+            require:'girl',//继承girl指令的controller
+            link: function (scope,element,attrs,girlCtrl) {
+                girlCtrl.add('clever');
+            }
+        }
+    })*/
+</script>
+</html>
