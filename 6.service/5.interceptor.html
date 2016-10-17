@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="djMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css">
+</head>
+<body ng-controller="djCtrl">
+
+<div class="alert alert-danger">{{message}}</div>
+<div class="container">
+
+</div>
+
+</body>
+<script src="../lib/angular/angular.js"></script>
+<script>
+    angular.module('djMod',[]);
+    angular.module('djMod').controller('djCtrl', function ($http) {
+        //config就是请求的配置对象
+        $http.get('http://localhost:8080').success(function (data,status,headers,config) {
+            console.log(arguments);
+        }).error(function () {
+            console.error(arguments);
+        }).then(function (res) {
+            console.log(res);
+        });
+    });
+    //拦截器的配置
+    angular.module('djMod').config(function ($httpProvider) {
+       $httpProvider.interceptors.push('djInterceptor')
+    });
+    //拦截器的定义
+    angular.module('djMod').factory('djInterceptor', function ($rootScope) {
+       return { //factory会返回一个对象
+           //会在$http发送到后台之前执行，在这里你可以修改配置
+           //接受配置对象作为参数，然后必须返回配置对象或者promise 如果返回无效的配置对象，或者拒绝，$http调用失败
+           'request': function (config) {
+               console.log('request');
+               return config;
+           },
+           //该方法会在http接收到后台的响应时执行，你可以修改响应
+           //接收响应对象作为参数，必须返回响应对象或者promise
+           'response': function (response) {
+               //response.data[0].name = response.data[0].name.toUpperCase();
+               console.log('response');
+               return response;
+           },
+           //请求发送失败或被拦截器拒绝会调用回调
+           //
+           'requestError': function (rejection) {
+               console.log('requestError');
+           },
+           //如果后台响应失败了
+           'responseError': function (rejection) {
+               switch(rejection.status){
+                   case 401:console.log('需要登录');
+                   case 403:console.log('没有权限');$rootScope.message = '没有权限';
+                   case 404:console.log('找不到页面');$rootScope.message = '找不到页面';
+                   case 500:console.log('服务器端错误');$rootScope.message = '服务器端错误';
+
+               }
+               console.log('responseError');
+           }
+       } 
+    });
+</script>
+</html>

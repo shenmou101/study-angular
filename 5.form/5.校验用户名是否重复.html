@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="djMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css">
+    <style>
+    </style>
+</head>
+<body class="container" ng-controller="djCtrl">
+<form action="" name="userform" novalidate="novalidate">
+    <div class="form-group" ng-class="{'has-error':userform.username.$invalid && userform.username.$dirty}">
+        <label for="username" class="control-label">用户名</label>
+        <input unique type="text" name="username" id="username" class="form-control" ng-model="username" dj-errors ng-required="" ng-minlength="3">
+    </div>
+    <div class="form-group">
+        <input type="button" ng-disabled="userform.$pristine || (userform.$dirty && userform.$invalid)" class="btn btn-default" value="提交">
+    </div>
+</form>
+<pre>
+    {{userform | json}}
+</pre>
+</body>
+<script src="../lib/angular/angular.js"></script>
+<script>
+    /*
+     * 每个angular应用只有一个根$rootScope对象(ng-app)
+     * 子$scope对象遵循原型继承，会继承父$scope上的属性和方法
+     *
+     * */
+    angular.module('djMod',[]);
+    angular.module('djMod').controller('djCtrl', function ($scope) {
+        $scope.user = {};
+    });
+
+    angular.module('djMod').directive('unique', function ($http) {
+        return {
+            restrict:'A',
+            require:'ngModel',
+            link: function (scope,element,attrs,ngModel) {
+                scope.$watch(attrs['ngModel'], function (newVal) {
+                    $http({
+                        method:'POST',
+                        headers:{'Content-Type':'application/json'},
+                        url:'http://localhost:8080/user/check',
+                        data:{username:newVal}
+                        //响应体 响应状态码 响应头 配置对象
+                    }).success(function (data,status,headers,conf) {
+                        console.log(data,status,headers,conf);
+                        ngModel.$setValidity('unique',data.unique)
+                    })
+                })
+            }
+        }
+    })
+</script>
+</html>

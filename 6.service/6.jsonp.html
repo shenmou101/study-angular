@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="djMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css">
+</head>
+<body>
+
+<ul class="list-group" keyword="dj">
+    <li class="list-group-item" ng-repeat="item in items">{{item}}</li>
+</ul>
+<div class="container">
+
+</div>
+
+</body>
+<script src="../lib/angular/angular.js"></script>
+<script>
+    angular.module('djMod',[]);
+    angular.module('djMod').directive('keyword', function ($http,$window) {
+        return{
+            link: function (scope,element,attr) {
+                $http.jsonp('http://suggestion.baidu.com/su?wd='+attr['keyword']+'&cb=show');
+                $window.show = function (data) {    //此处的show不是固定的 等于cb的值
+                    console.log(data,data.s);
+                    scope.items = data.s;
+                }
+            }
+        }
+    })
+</script>
+</html>

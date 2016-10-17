@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="djMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css">
+    <style>
+    </style>
+</head>
+<body class="container" ng-controller="djCtrl">
+<div times="3">
+    <span>{{word}}</span>
+</div>
+</body>
+<script src="../lib/angular/angular.js"></script>
+<script>
+    /*
+    * compile用来对模板自身进行转换，而link函数负责在模型和视图之间进行动态关联
+    *
+    * */
+    angular.module('djMod',[]);
+    angular.module('djMod').controller('djCtrl', function ($scope) {
+
+    });
+    //过滤器服务的名字就是过滤器名字+Filter 服务即函数
+    angular.module('djMod').directive('times', function () {
+        return {
+            replace:false,  //是否把调用指令的元素替换
+            restrict:'A',
+            //编译函数，对dom模板进行编译，template替换之后，scope链接link函数执行前
+            //element是调用指令的元素
+            compile: function (element,attrs) {
+                console.log('开始compile');
+                var tpl = element.children();
+                for(var i = 0; i< attrs.times-1 ; i++){
+                    element.append(tpl.clone())
+                }
+                return function (scope,element,attrs) { //postLink
+                    scope.word = 'hello1';
+                    console.log('compile的链接函数');
+                }
+            },
+            link: function (scope,element,attrs) {
+                scope.word = 'hello2';
+                console.log('链接函数')
+            }
+        }
+    })
+</script>
+</html>

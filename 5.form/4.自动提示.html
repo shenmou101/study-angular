@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="djMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css">
+    <style>
+    </style>
+</head>
+<body class="container" ng-controller="djCtrl">
+<form action="" name="userform" novalidate="novalidate">
+    <div class="form-group" ng-class="{'has-error':userform.email.$invalid && userform.email.$dirty}">
+        <label for="email" class="control-label">邮箱</label>
+        <input type="email" name="email" id="email" class="form-control" ng-model="email" dj-errors ng-required="" ng-minlength="3">
+    </div>
+    <div class="form-group">
+        <input type="button" ng-disabled="userform.$pristine || (userform.$dirty && userform.$invalid)" class="btn btn-default" value="提交">
+    </div>
+</form>
+<pre>
+    {{userform | json}}
+</pre>
+</body>
+<script src="../lib/angular/angular.js"></script>
+<script>
+    /*
+     * 每个angular应用只有一个根$rootScope对象(ng-app)
+     * 子$scope对象遵循原型继承，会继承父$scope上的属性和方法
+     *
+     * */
+    angular.module('djMod',[]);
+    angular.module('djMod').controller('djCtrl', function ($scope) {
+        $scope.user = {};
+    });
+    //定义一个常量（也可理解为服务，可注入到任何地方）
+    angular.module('djMod').constant('errors',{
+        'email':'邮箱不合法',
+        'minlength':'最小长度不够'
+    });
+    angular.module('djMod').filter('error', function (errors) {
+        return function (input) {    //此input为需要过滤的值
+            return errors[input]
+        }
+    });
+    angular.module('djMod').directive('djErrors', function ($compile) {
+        return {
+            restrict:'A',
+            require:'ngModel',
+            link: function (scope,element,attrs,ngModel) {
+                //动态生成DOM元素并自动插入到当前input的后面
+                //1.生成一个独立的scope
+                var subScope = scope.$new(true);//$new方法就是生成新scope，设置为true则生成独立的，即空的scope
+                //判断此字符输入是否合法
+                subScope.hasError = function(){
+                    return ngModel.$invalid && ngModel.$dirty
+                };
+                //得到错误对象
+                subScope.errors = function () {
+                    return ngModel.$error;
+                };
+                var tmpl = $compile('<p class="help-block" ng-repeat="(key,value) in errors()" ng-show="hasError()">{{key|error}}</p>');
+                var tips = tmpl(subScope);  //compile可以指定和哪个scope进行链接，得到一个jquery对象
+                //插入到当前元素后面
+                element.after(tips)
+            }
+        }
+    })
+</script>
+</html>

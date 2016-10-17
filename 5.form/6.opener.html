@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="djMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css">
+    <style>
+        .title{
+            width:100px;
+            height:30px;
+            border:solid red 1px;
+            background-color: red;
+        }
+        .content{
+            width:100px;
+            height:100px;
+            border:solid blue 1px;
+            background-color: orange;
+        }
+    </style>
+</head>
+<body class="container" ng-controller="djCtrl">
+    <opener title="{{title}}">
+        {{content}}
+    </opener>
+</body>
+<script src="../lib/angular/angular.js"></script>
+<script>
+    /*
+     * 每个angular应用只有一个根$rootScope对象(ng-app)
+     * 子$scope对象遵循原型继承，会继承父$scope上的属性和方法
+     *
+     * */
+    angular.module('djMod',[]);
+    angular.module('djMod').controller('djCtrl', function ($scope) {
+        $scope.title = '标题';
+        $scope.content = '内容';
+    });
+
+    angular.module('djMod').directive('opener', function () {
+        return {
+            restrict:'E',
+            replace:true,
+            scope:{
+                title:'@' //@表示指令元素上的title属性的value作为一个纯文本（所以需要{{title}}），=是作为scope的属性（所以需要写title）
+            },
+            transclude:true, //内嵌而非覆盖
+            templateUrl:'tmpl.html',
+            link: function (scope,element,attr) {
+                
+            }
+        }
+    })
+</script>
+</html>

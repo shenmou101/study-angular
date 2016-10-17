@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="djMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css">
+    <style>
+    </style>
+</head>
+<body class="container" ng-controller="djCtrl">
+<form action="" name="userform" novalidate="novalidate">
+    <div class="form-group" ng-class="{'has-error':userform.email.$invalid && userform.email.$dirty}">
+        <label for="email" class="control-label">邮箱</label>
+        <input type="email" name="email" id="email" class="form-control" ng-model="email" ng-required="" ng-minlength="3">
+        <p class="help-block" ng-show="userform.email.$error.email">
+            邮箱输入不合法
+        </p>
+        <p class="help-block" ng-show="userform.email.$error.minlength">
+            邮箱长度必须大于3
+        </p>
+    </div>
+    <div class="form-group">
+        <input type="button" ng-disabled="userform.$pristine || (userform.$dirty && userform.$invalid)" class="btn btn-default" value="提交">
+    </div>
+</form>
+<pre>
+    {{userform | json}}
+</pre>
+</body>
+<script src="../lib/angular/angular.js"></script>
+<script>
+    /*
+     * 每个angular应用只有一个根$rootScope对象(ng-app)
+     * 子$scope对象遵循原型继承，会继承父$scope上的属性和方法
+     *
+     * */
+    angular.module('djMod',[]);
+    angular.module('djMod').controller('djCtrl', function ($scope) {
+        $scope.user = {};
+    })
+</script>
+</html>

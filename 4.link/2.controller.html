@@ -8,19 +8,12 @@
     </style>
 </head>
 <body class="container" ng-controller="djCtrl">
-    <girl>
-        <span kind="beautiful,clever">娟{{kinds}}</span>
-    </girl>
+    <girl kind="beautiful,clever"></girl>
 
     <!--当同一个元素绑定多个相同的指令则指令合并为第一个-->
 </body>
 <script src="../lib/angular/angular.js"></script>
 <script>
-    /*
-    * 每个angular应用只有一个根$rootScope对象(ng-app)
-    * 子$scope对象遵循原型继承，会继承父$scope上的属性和方法
-    *
-    * */
     angular.module('djMod',[]);
     angular.module('djMod').controller('djCtrl', function ($scope) {
 
@@ -30,7 +23,7 @@
         return {
             restrict: 'E',
             scope: true,
-            //link用来将指令隔离开 controller用来定义可以复用的行为和可以提供给别的指令调用方法
+            //link用来操作dom和绑定事件监听器 controller用来定义可以复用的行为和可以提供给别的指令调用方法
             //控制器里命名是死的，是依赖注入的服务
             controller: function ($scope,$element,$attrs) {
                 $scope.kinds = [];
@@ -39,8 +32,8 @@
                     console.log($scope.kinds)
                 }
             },
-            transclude: true,   //指令所在的元素的子元素不会被指令覆盖 而是内嵌入所在元素
-            template: '<div ng-transclude></div>',
+            //transclude: true,   //指令所在的元素的子元素不会被指令覆盖 而是内嵌入模板
+            template: '<div ng-transclude>{{kinds}}</div>',
             //link里是形参，可以随便写
             link: function (scope,element,attrs) {
                 element.bind('click', function () {

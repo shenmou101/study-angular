@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="djMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css">
+</head>
+<body ng-controller="djCtrl">
+<div class="container">
+
+</div>
+
+</body>
+<script src="../lib/angular/angular.js"></script>
+<script>
+    angular.module('djMod',[]);
+    angular.module('djMod').config(function ($provide) {
+        $provide.decorator('$log', function ($delegate) {   //$delegate指的是$log的原函数
+            angular.forEach(['log','debug','info','warn','error'], function (method) {
+                $delegate[method] = decorate($delegate[method]);
+                function decorate(method){
+                    return function () {
+                        var args = Array.prototype.slice.call(arguments);//将传入的函数的参数转化为数组；
+                        args.unshift(new Date().toLocaleString());
+                        method.apply(null,args)
+                    }
+                };
+            return $delegate
+            })
+        })
+    });
+    angular.module('djMod').controller('djCtrl', function ($log) {
+        var date = new Date().toLocaleString();
+        $log.debug('debug');
+        $log.error('error');
+        $log.info('info');
+        $log.warn('warn');
+        $log.log('log');
+    });
+
+</script>
+</html>
