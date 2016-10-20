@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="bookMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="bootstrap.css">
+</head>
+<body ng-controller="bookCtrl">
+<table class="table table-bordered">
+    <tr>
+        <td>ID</td>
+        <td>书名</td>
+    </tr>
+    <tr>
+        <td>{{book.id}}</td>
+        <td>{{book.name}}</td>
+    </tr>
+</table>
+
+<table class="table table-bordered">
+    <tr>
+        <td>ID</td>
+        <td>书名</td>
+        <td>操作</td>
+    </tr>
+    <tr ng-repeat="book in books">
+        <td>{{book.id}}</td>
+        <td ng-click="detail($index)">{{book.name}}</td>
+        <td>
+            <button class="btn btn-warning" ng-click="edit(book)">修改</button>
+            <button class="btn btn-danger" ng-click="del(book)">删除</button>
+        </td>
+    </tr>
+</table>
+
+<table class="table table-bordered">
+    <tr>
+        <td>ID</td>
+        <td>书名</td>
+    </tr>
+    <tr>
+        <td><input type="text" ng-model="book.name" class="form-control"></td>
+        <td>
+            <button ng-click="add()" class="btn btn-primary">保存</button>
+        </td>
+    </tr>
+</table>
+</body>
+<script src="angular.js"></script>
+<script src="angular-resource.js"></script>
+
+<script>
+    angular.module('bookMod',['ngResource']);
+    angular.module('bookMod').factory('bookService', function ($resource) {
+        /*
+        * url 路径
+        * 路径参数
+        * 给返回值上添加自定义方法
+        * */
+        return $resource('/books/:id',{id:'@id'},{
+            update:{method:'PUT'}   //原生没提供update的原因是官方认为保存和更新都用save方法就够了 后台去根据id有无来判断是保存还是更新
+        });
+    });
+    angular.module('bookMod').controller('bookCtrl', function ($scope,bookService) {
+        $scope.book = {};
+        $scope.books = [];
+        //get方法用于查询数据
+        bookService.query().$promise.then(function(books){
+            $scope.books = books;
+            console.log(books)
+        });
+        $scope.add = function () {
+            var id = $scope.book.id;
+            //save方法用于更新或添加数据
+            if(id){ //如果id存在则是编辑 否则是添加
+                bookService.update($scope.book).$promise.then(function (book) {
+                    $scope.book = {};
+                    $scope.books.map((item)=>{
+                        if(item.id == id){
+                            return book;
+                        }else{
+                            return item;
+                        }
+                    })
+                });
+            }else{
+                bookService.save($scope.book).$promise.then(function (data) {
+                    $scope.books.push(data);
+                    $scope.book = {};
+                });
+            }
+
+        };
+        $scope.del = function (book) {
+            //save方法用于更新或添加数据
+            bookService.delete(book).$promise.then(function (book) {
+                var index = $scope.books.indexOf(book);
+                $scope.books.splice(index,1);
+            });
+        };
+        $scope.detail = function (index) {
+            $scope.book = $scope.books[index]
+        };
+        $scope.edit = function (book) {
+            $scope.book = book
+        }
+    });
+
+    /*
+    * map过滤数组 遍历每个元素并判断是否符合条件 可修改该元素并返回该元素 最后重组一个数组
+    * filter过滤数组 遍历每个元素并判断是否符合条件 去除或者保留这个元素组成的数组
+    * */
+</script>
+</html>

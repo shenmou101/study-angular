@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="uiMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body ng-controller="djCtrl">
+<button ng-click="goUsers()">users</button>
+<ul>
+    <li><a ui-sref="index">index</a></li>
+    <li><a ui-sref="users">users</a></li>
+</ul>
+<div ui-view></div>
+</body>
+<script src="../../lib/angular/angular.js"></script>
+<script src="../angular-ui-router.js"></script>
+<script>
+    angular.module('uiMod',['ui.router']);
+    angular.module('uiMod').controller('djCtrl',function ($scope,$state) {
+        $scope.goUsers = () => {
+            $state.go('users');
+        }
+    });
+    angular.module('uiMod').run(function ($rootScope,$state) {
+        $rootScope.$on('$stateChangeStart',function (event,toState,toParams,fromState,fromParams) {
+            //参数：状态改变事件 目标路径 目标路径参数 原路径 原路径参数
+            if(toState.need_login){
+                if(!$rootScope.me){
+                    alert('您还没用登录');
+                    event.preventDefault();
+                    $state.go('index');
+                    return;
+                }
+            }
+        });
+        $rootScope.$on('$stateNotFound',function (event,toState,toParams,fromState,fromParams) {
+            alert('状态无效');
+            $state.go('index');
+        });
+    });
+    angular.module('uiMod').config(function ($stateProvider,$urlRouterProvider) {
+        $urlRouterProvider.otherwise('/index');
+        $stateProvider.state('index',{
+            url:'/index',
+            template:'<h1>hello world</h1>'
+        }).state('users',{
+            url:'/users',
+            templateUrl:'users.html',
+            controller:function ($scope,$http,title,users) {
+                $scope.title = title.name;
+                $scope.users = users;
+            },
+            need_login:true,    //状态的自定义属性 设置登录保护
+            onEnter:function () {
+                alert('进入用户路由');
+            },
+            onExit:function(){
+                alert('退出用户路由');
+            },
+            //定义两个服务，服务可以是同步，也可以是异步，可以返回对象，也可以返回promise 一般用于延迟任务
+            resolve:{   //key/factory构成的对象
+                title:function () {
+                    return {name:'用户列表'}
+                },
+                users:function ($q,$timeout) {
+                    var defer = $q.defer();
+                    $timeout(function () {
+                        defer.resolve(['aaa','bbb']);
+                        //defer.reject('失败'); //如果reject则onEnter和onExit无法触发
+                    },999);
+                    return defer.promise;   //如果function是一个延时操作，那么控制器必须等待该函数执行完成才会被实例化
+                }
+            }
+        });
+    });
+
+</script>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="uiMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<ul>
+    <li><a ui-sref="user">用户管理</a></li>
+    <li><a ui-sref="book">书籍管理</a></li>
+    <li><a ui-sref="profile">个人设置</a></li>
+</ul>
+<div ui-view></div>
+</body>
+<script src="../../lib/angular/angular.js"></script>
+<script src="../angular-ui-router.js"></script>
+<script>
+    angular.module('uiMod',['ui.router']);
+
+    angular.module('uiMod').config(function ($stateProvider,$urlRouterProvider) {
+        $urlRouterProvider.otherwise('/user');
+        $stateProvider.state('user',{
+            url:'/user',
+            templateUrl:'tmpl/user.html'
+        }).state('user.list',{
+            url:'/list',
+            templateUrl:'tmpl/user.list.html' //状态激活后 子级的template会插入父级的template
+        }).state('user.add',{
+            url:'/add',
+            templateUrl:'tmpl/user.add.html' //状态激活后 子级的template会插入父级的template
+        }).state('book',{
+            url:'/book',
+            templateUrl:'tmpl/book.html'
+        }).state('book.list',{
+            url:'/list',
+            templateUrl:'tmpl/book.list.html' //状态激活后 子级的template会插入父级的template
+        }).state('book.add',{
+            url:'/add',
+            templateUrl:'tmpl/book.add.html' //状态激活后 子级的template会插入父级的template
+        }).state('profile',{
+            url:'/profile',
+            views:{
+                '':{    /*''表示默认模板 必须有！*/
+                    templateUrl:'tmpl/profile.html'
+                },
+                'userInfo@profile':{    /*@表示前者是后者的子模板*/
+                    templateUrl:'tmpl/userInfo.html'
+                },
+                'contactInfo@profile':{
+                    template:'北京昌平'
+                }
+            }
+        });
+    });
+
+</script>
+</html>
