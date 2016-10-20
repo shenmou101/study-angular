@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="djMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css">
+</head>
+<body ng-controller="djCtrl">
+<ul>
+    <a href="#/index">index</a><!--#表示锚点 防止跳转-->
+    <a href="#/users">user</a>
+    <a href="#/book">book</a>
+    <a href="#/settings">settings</a>
+</ul>
+<button class="btn" ng-click="goUser()">登录</button>
+<div ng-view></div>
+<script src="../lib/angular/angular.js"></script>
+<script src="angular-ui-router.js"></script>
+
+<script>
+    angular.module('djMod',['ngRoute']);
+    angular.module('djMod').controller('djCtrl',function ($scope,$location) {
+        $scope.goUser = () => {
+            $location.path('user')
+        }
+    });
+    angular.module('djMod').config(function ($routeProvider) {
+        $routeProvider.when('/',{
+            template:'index'
+        }).when('/users',{
+            templateUrl:'users.html',
+            controller:'userCtrl'
+        }).when('/book',{
+            template:'book'
+        }).when('/user/:id',{
+            template:'用户详情{{id}}',
+            controller:function ($scope,$routeParams) { //$routeParams是个对象 存放着:id和值
+                $scope.id = $routeParams.id;
+            }
+        }).when('/settings',{
+            template:'settings'
+        }).otherwise({
+            redirectTo:'/'
+        })
+    });
+    //这是系统启动后的第一个方法
+    angular.module('djMod').run(function ($rootScope) {
+        $rootScope.$on('$routeChangeStart',function (event,to,from) {
+            console.log(event);
+            console.log(from);
+            console.log(to);
+            if(to.$$route.originalPath == '/settings'){
+                if($rootScope.me){  //me：用户登陆后会把用户信息赋值给$rootScope.me
+
+                }else{
+                    alert('您尚未登录！');
+                    event.preventDefault();
+                    return;
+                }
+            }
+        })
+    })
+</script>
+<script>
+    angular.module('djMod').controller('userCtrl',function ($scope) {
+        $scope.title = '用户列表';
+        $scope.users = [
+            {id:1,name:'zfpx1'},
+            {id:2,name:'zfpx2'},
+            {id:3,name:'zfpx3'}
+        ]
+    })
+</script>
+</body>
+</html>
