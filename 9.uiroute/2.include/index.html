@@ -16,7 +16,6 @@
 <script src="../angular-ui-router.js"></script>
 <script>
     angular.module('uiMod',['ui.router']);
-
     angular.module('uiMod').config(function ($stateProvider,$urlRouterProvider) {
         $urlRouterProvider.otherwise('/user');
         $stateProvider.state('user',{

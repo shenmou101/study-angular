@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="djMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css">
+</head>
+<body ng-controller="djCtrl">
+<div class="container">
+    <div class="row">
+        {{total}}
+    </div>
+</div>
+
+</body>
+<script src="../lib/angular/angular.js"></script>
+<script>
+    angular.module('djMod',[]);
+    angular.module('djMod').controller('djCtrl',function ($scope,numberFilter,currencyFilter) {
+        var total = "342.2334";
+        $scope.total = currencyFilter(numberFilter(total,1),'RMB ');
+    });
+
+</script>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="animateMod">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .box{
+            width:200px;
+            height:200px;
+            background-color:green;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+<input type="checkbox" ng-model="check">
+<div class="box" ng-show="check">
+    hello
+</div>
+</body>
+<script src="../lib/jquery/dist/jquery.js"></script>
+<script src="../lib/angular/angular.js"></script>
+<script src="angular-animate.js"></script>
+<script>
+    angular.module('animateMod',['ngAnimate']);
+    angular.module('animateMod').controller('animateCtrl',function () {
+        
+    });
+    angular.module('animateMod').animation('.box',function () {
+        return{
+            //增加减少类sClass
+            addClass:function (element,sClass,done) { //当前正在动画的元素 动画完成触发事件
+                $(element).css({width:0,height:0});
+                $(element).animate({width:100,height:100},1000,done);
+            },
+            //
+            removeClass:function (element,sClass,done) {
+                $(element).animate({width:0,height:0},1000,done);
+            }
+        }
+    })
+</script>
+</html>

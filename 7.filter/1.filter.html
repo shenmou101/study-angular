@@ -5,23 +5,36 @@
     <title>Title</title>
     <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css">
 </head>
-<body ng-controller="djCtrl as vm">
+<body ng-init="users=[{name:'dsd',age:4},{name:'ggg',age:77}]">
 <div class="container">
     <div class="row">
-        <div class="col-xs-4 col-xs-offset-4">
-            <input type="text" class="form-control" ng-model="vm.a">
-            <select name="" id="" class="form-control" id="" ng-model="vm.operate">
-                <options>
-                    <option value="+">+</option>
-                    <option value="-">-</option>
-                    <option value="*">*</option>
-                    <option value="/">/</option>
-                </options>
-            </select>
-            <input type="text" ng-model="vm.b" class="form-control">
-            <button ng-click="vm.doCal()" class="btn btn-primary">=</button>
-            <div id="result" ng-bind="vm.result"></div>
-        </div>
+        <!--{{99.99|currency}}
+        {{"434234.32"|number:1|currency}}-->
+        姓名 <input type="text" ng-model="search.name">
+        年龄 <input type="text" ng-model="search.$age"> <!--$表示匹配所有属性-->
+        <button class="btn btn-info" ng-click="order = 'age'">升序</button>
+        <button class="btn btn-info" ng-click="order = '-age'">降序</button>
+        <table class="table table-responsive">
+            <tr>
+                <td>姓名</td>
+                <td>年龄</td>
+            </tr>
+            <tr ng-repeat="user in users | filter:search">
+                <td>{{user.name}}</td>
+                <td>{{user.age}}</td>
+            </tr>
+        </table>
+        <table class="table table-responsive">
+            <tr>
+                <td>姓名</td>
+                <td>年龄</td>
+            </tr>
+            <tr ng-repeat="user in users | orderBy:order"> <!--order也可填'age'-->
+                <td>{{user.name}}</td>
+                <td>{{user.age}}</td>
+            </tr>
+        </table>
+        {{count}}
     </div>
 </div>
 
@@ -29,28 +42,6 @@
 <script src="../lib/angular/angular.js"></script>
 <script>
     angular.module('djMod',[]);
-    angular.module('djMod',[]).provider('djCalculator', function () {
-        var prefix = '$';
-        this.setPrefix= function (p) {
-            prefix = p;
-        };
-        this.$get = function () {
-            return {
-                '+': function (a,b) {return prefix+(parseInt(a)+parseInt(b))},
-                '-': function (a,b) {return prefix+parseInt(a-b)},
-                '*': function (a,b) {return prefix+parseInt(a)*parseInt(b)},
-                '/': function (a,b) {return prefix+parseInt(a)/parseInt(b)}
-            }
-        }
-    });
-    angular.module('djMod').config(function (djCalculatorProvider) {
-        djCalculatorProvider.setPrefix('￥')
-    });
-    angular.module('djMod').controller('djCtrl', function (djCalculator) {    //注入的zfCalculator就是上面return的内容
-        var vm = this;
-        vm.doCal = function () {
-            vm.result = djCalculator[vm.operate](vm.a,vm.b)
-        }
-    });
+
 </script>
 </html>

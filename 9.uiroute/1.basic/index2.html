@@ -22,7 +22,7 @@
         }
     });
     angular.module('uiMod').run(function ($rootScope,$state) {
-        $rootScope.$on('$stateChangeStart',function (event,toState,toParams,fromState,fromParams) {
+        $rootScope.$on('$stateChangeStart',function (event,toState,toParams,fromState,fromParams) { //还有$stateChangeSuccess $stateChangeError $stateNotFound
             //参数：状态改变事件 目标路径 目标路径参数 原路径 原路径参数
             if(toState.need_login){
                 if(!$rootScope.me){
